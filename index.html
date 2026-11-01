@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SR GS Study Circle (প্রস্তুতি) - Official Coaching Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+
+  <!-- TOP HEADER -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex flex-wrap justify-between items-center gap-2 sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-lg text-lg">SR</div>
+      <div>
+        <h1 class="font-bold text-sm md:text-base text-white">SR GS Study Circle (প্রস্তুতি)</h1>
+        <p class="text-[11px] text-amber-400">Competitive Job Examination Coaching</p>
+      </div>
+    </div>
+    <div id="user-bar" class="hidden items-center gap-2">
+      <span id="current-user-badge" class="text-xs bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-full"></span>
+      <button onclick="logout()" class="text-xs bg-red-500/20 text-red-300 border border-red-500/40 px-3 py-1 rounded-lg">Logout</button>
+    </div>
+  </header>
+
+  <!-- 1. LOGIN & REGISTRATION SCREEN -->
+  <section id="auth-screen" class="max-w-md mx-auto mt-8 p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4">
+      <h2 class="text-lg font-bold text-amber-400 text-center">Student & Faculty Portal Login</h2>
+      
+      <!-- Instant Demo Login Buttons -->
+      <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+        <p class="text-[11px] text-slate-400 text-center">Tap a button below for 1-click testing:</p>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="quickLogin('admin@srgs.com','admin123')" class="bg-amber-500 text-slate-950 font-bold py-2 px-2 rounded-lg text-xs">Admin View</button>
+          <button onclick="quickLogin('student@srgs.com','student123')" class="bg-emerald-500 text-slate-950 font-bold py-2 px-2 rounded-lg text-xs">Paid Student</button>
+          <button onclick="quickLogin('unpaid@srgs.com','student123')" class="bg-rose-500 text-white font-bold py-2 px-2 rounded-lg text-xs">Unpaid Student</button>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <input id="login-email" type="email" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-sm" />
+        <input id="login-pass" type="password" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-sm" />
+        <button onclick="handleLogin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-lg text-sm">Sign In</button>
+      </div>
+
+      <hr class="border-slate-800" />
+      <details class="text-xs text-slate-300">
+        <summary class="cursor-pointer text-amber-400 font-semibold text-center">New Student? Register Account</summary>
+        <div class="mt-3 space-y-2">
+          <input id="reg-name" type="text" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2" />
+          <input id="reg-phone" type="tel" placeholder="WhatsApp Phone Number" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2" />
+          <input id="reg-email" type="email" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2" />
+          <input id="reg-pass" type="password" placeholder="Create Password" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2" />
+          <button onclick="handleRegister()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold py-2 rounded-lg">Create Student Account</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 2. UNPAID STUDENT FEE LOCK SCREEN -->
+  <section id="unpaid-screen" class="hidden max-w-lg mx-auto mt-6 p-4">
+    <div class="bg-slate-900 border-2 border-rose-500/60 rounded-2xl p-5 text-center space-y-4 shadow-xl">
+      <div class="inline-block bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-1 rounded-full text-xs font-bold">🔒 Course Access Locked — Fee Pending</div>
+      <h2 class="text-lg font-bold text-white">Complete Monthly Batch Fee Payment</h2>
+      <p class="text-xs text-slate-400">Live Classes, Recorded Videos, PDF Study Materials, and Mock Tests are strictly unlocked only for fee-paid students.</p>
+
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+        <p class="text-sm font-semibold text-amber-400">Course Fee: ₹<span id="pay-amount">500</span> | UPI ID: <span id="pay-upi">srgs@upi</span></p>
+        <img id="upi-qr-img" class="mx-auto w-44 h-44 rounded-lg bg-white p-2" alt="UPI QR Code" />
+        <a id="upi-deep-link" href="#" class="block w-full bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg text-sm">📱 Tap to Pay via GPay / PhonePe / Paytm</a>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-left space-y-2">
+        <label class="text-xs font-semibold text-amber-400">Already Paid? Submit 12-Digit UPI UTR / Ref Number:</label>
+        <input id="utr-input" type="text" placeholder="Enter 12-digit UTR Number (e.g. 412589632145)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm" />
+        <button onclick="submitUTR()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-lg text-xs">Submit Payment Proof for Verification</button>
+        <p id="utr-status-msg" class="text-xs text-emerald-400 font-medium"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PAID STUDENT PORTAL (NO VIEWER COUNT, PRIVATE DOUBTS) -->
+  <section id="student-screen" class="hidden max-w-6xl mx-auto p-4 space-y-6">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+        <span id="live-title-display" class="text-sm font-bold text-white"></span>
+      </div>
+      <!-- ZERO HEADCOUNT SHOWN ANYWHERE -->
+      <span class="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-1 rounded-full">✓ Paid Batch Unlocked</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Live Video Frame -->
+      <div class="lg:col-span-2 bg-black rounded-xl overflow-hidden border border-slate-800">
+        <div class="aspect-video w-full">
+          <iframe id="student-yt-frame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="p-3 bg-slate-900 flex justify-between text-xs text-slate-400">
+          <span>Protected Stream • SR GS Study Circle</span>
+          <span class="text-amber-400">🔒 Private Classroom</span>
+        </div>
+      </div>
+
+      <!-- 1-on-1 Private Doubt Box -->
+      <div class="bg-slate-900 rounded-xl border border-slate-800 flex flex-col h-[400px]">
+        <div class="p-3 border-b border-slate-800">
+          <h3 class="font-bold text-sm text-amber-400">🔒 Ask Sir Directly (1-on-1 Private)</h3>
+          <p class="text-[11px] text-slate-400">Only you and Sir can see your questions here.</p>
+        </div>
+        <div id="private-doubt-feed" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs"></div>
+        <div class="p-3 border-t border-slate-800 flex gap-2">
+          <input id="student-doubt-input" type="text" placeholder="Type your doubt privately..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs" />
+          <button onclick="sendPrivateDoubt()" class="bg-amber-500 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Study Materials & Timed MCQ Test -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+        <h3 class="font-bold text-amber-400 text-sm mb-3">📚 Subject-Wise PDF Notes & Recorded Classes</h3>
+        <div id="student-materials-list" class="space-y-2 text-xs"></div>
+      </div>
+
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+        <h3 class="font-bold text-amber-400 text-sm">📝 Active Timed MCQ Mock Test (+1 / -0.25)</h3>
+        <div id="mcq-box" class="space-y-3 text-xs"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ADMIN DASHBOARD (FEE TRACKER, LIVE CONTROLLER, DOUBT REPLIES) -->
+  <section id="admin-screen" class="hidden max-w-6xl mx-auto p-4 space-y-6">
+    <!-- Fee Tracker & Unpaid Filter -->
+    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-4">
+      <div class="flex flex-wrap justify-between items-center gap-2">
+        <h2 class="font-bold text-amber-400 text-base">💰 Student Fee Register & Unpaid Tracker</h2>
+        <div class="flex gap-1.5 text-xs">
+          <button onclick="renderAdminStudents('ALL')" class="bg-slate-800 px-2.5 py-1 rounded">All</button>
+          <button onclick="renderAdminStudents('PAID')" class="bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded">Paid</button>
+          <button onclick="renderAdminStudents('PENDING')" class="bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded">Pending UTR</button>
+          <button onclick="renderAdminStudents('UNPAID')" class="bg-rose-500/20 text-rose-300 px-2.5 py-1 rounded">Unpaid</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs">
+        <div>UPI ID: <input id="cfg-upi" type="text" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 ml-1" /></div>
+        <div>Monthly Fee (₹): <input id="cfg-fee" type="number" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 ml-1 w-24" /></div>
+        <button onclick="savePaymentSettings()" class="bg-amber-500 text-slate-950 font-bold rounded py-1 px-3">Update UPI & Fee</button>
+      </div>
+      <div id="admin-student-table" class="space-y-2 text-xs"></div>
+    </div>
+
+    <!-- Live Stream & Materials Manager -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+        <h3 class="font-bold text-amber-400 text-sm">🎥 Live Class Broadcast Controller</h3>
+        <input id="adm-live-title" type="text" placeholder="Class Title" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs" />
+        <input id="adm-live-url" type="text" placeholder="Paste Unlisted YouTube Link or Video ID" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs" />
+        <button onclick="updateLiveStream()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-lg text-xs">Publish Live Stream to Paid Batch</button>
+
+        <hr class="border-slate-800" />
+        <h3 class="font-bold text-amber-400 text-sm">📄 Add Study Material / PDF Link</h3>
+        <input id="mat-title" type="text" placeholder="Topic (e.g. Indian Polity Notes PDF)" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs" />
+        <input id="mat-link" type="text" placeholder="Google Drive PDF or YouTube Link" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs" />
+        <button onclick="addMaterial()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold py-2 rounded-lg text-xs">+ Add Material</button>
+      </div>
+
+      <!-- Admin Private Doubt Inbox -->
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex flex-col h-[380px]">
+        <h3 class="font-bold text-amber-400 text-sm mb-2">📩 Incoming 1-on-1 Student Doubts</h3>
+        <div id="admin-doubt-inbox" class="flex-1 overflow-y-auto space-y-2 text-xs"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const defaultState = {
+      upiId: 'srgs@upi',
+      feeAmount: 500,
+      liveTitle: 'LIVE NOW: Indian Polity & Constitution — Fundamental Rights',
+      liveVideoId: 'jfKfPfyJRdk',
+      users: [
+        { id: 1, name: 'Suvadeep Roy (Admin)', email: 'admin@srgs.com', pass: 'admin123', role: 'admin', phone: '9999999999', status: 'PAID', utr: '' },
+        { id: 2, name: 'Rahul Mondal', email: 'student@srgs.com', pass: 'student123', role: 'student', phone: '9876543210', status: 'PAID', utr: '412598745632' },
+        { id: 3, name: 'Ananya Das', email: 'unpaid@srgs.com', pass: 'student123', role: 'student', phone: '9123456780', status: 'UNPAID', utr: '' },
+        { id: 4, name: 'Sourav Ghosh', email: 'sourav@srgs.com', pass: 'student123', role: 'student', phone: '9000011111', status: 'PENDING', utr: '431265897410' }
+      ],
+      doubts: [
+        { id: 101, studentEmail: 'student@srgs.com', studentName: 'Rahul Mondal', q: 'Sir, does Article 226 give wider writ power to High Courts than Article 32?', reply: 'Yes! High Courts under Art. 226 can issue writs for both Fundamental Rights and ordinary legal rights.' }
+      ],
+      materials: [
+        { title: '📘 Indian Polity - Fundamental Rights Complete PDF', url: 'https://drive.google.com' },
+        { title: '🔬 General Science - Optics & Wave Motion Capsule PDF', url: 'https://drive.google.com' }
+      ],
+      mcqs: [
+        { q: '1. Which Article of the Indian Constitution is called the Heart and Soul of the Constitution?', opts: ['Article 14', 'Article 19', 'Article 21', 'Article 32'], ans: 3 },
+        { q: '2. Optical fiber communication primarily works on the principle of:', opts: ['Refraction', 'Total Internal Reflection', 'Diffraction', 'Polarization'], ans: 1 },
+        { q: '3. Who presided over the 1924 Belgaum Session of the Indian National Congress?', opts: ['Subhas Chandra Bose', 'Mahatma Gandhi', 'Jawaharlal Nehru', 'Sardar Patel'], ans: 1 }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem('srgs_portal_v1')) || defaultState;
+    let currentUser = null;
+
+    function saveState() { localStorage.setItem('srgs_portal_v1', JSON.stringify(state)); }
+
+    function extractYouTubeId(input) {
+      const m = input.trim().match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/))([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : input.trim();
+    }
+
+    function quickLogin(email, pass) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-pass').value = pass;
+      handleLogin();
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const pass = document.getElementById('login-pass').value.trim();
+      const user = state.users.find(u => u.email.toLowerCase() === email && u.pass === pass);
+      if (!user) return alert('Invalid email or password!');
+      currentUser = user;
+      renderApp();
+    }
+
+    function handleRegister() {
+      const name = document.getElementById('reg-name').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const pass = document.getElementById('reg-pass').value.trim();
+      if (!name || !email || !pass) return alert('Please fill all details.');
+      const newUser = { id: Date.now(), name, phone, email, pass, role: 'student', status: 'UNPAID', utr: '' };
+      state.users.push(newUser);
+      saveState();
+      currentUser = newUser;
+      renderApp();
+    }
+
+    function logout() { currentUser = null; renderApp(); }
+
+    function renderApp() {
+      ['auth-screen', 'unpaid-screen', 'student-screen', 'admin-screen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      const bar = document.getElementById('user-bar');
+      if (!currentUser) {
+        bar.classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        return;
+      }
+      bar.classList.remove('hidden');
+      bar.classList.add('flex');
+      document.getElementById('current-user-badge').innerText = `${currentUser.name} (${currentUser.role === 'admin' ? 'Admin' : currentUser.status})`;
+
+      if (currentUser.role === 'admin') {
+        document.getElementById('admin-screen').classList.remove('hidden');
+        document.getElementById('cfg-upi').value = state.upiId;
+        document.getElementById('cfg-fee').value = state.feeAmount;
+        document.getElementById('adm-live-title').value = state.liveTitle;
+        document.getElementById('adm-live-url').value = state.liveVideoId;
+        renderAdminStudents('ALL');
+        renderAdminDoubts();
+      } else if (currentUser.status !== 'PAID') {
+        document.getElementById('unpaid-screen').classList.remove('hidden');
+        document.getElementById('pay-amount').innerText = state.feeAmount;
+        document.getElementById('pay-upi').innerText = state.upiId;
+        const upiUri = `upi://pay?pa=${encodeURIComponent(state.upiId)}&pn=${encodeURIComponent('SR GS Study Circle')}&am=${state.feeAmount}&cu=INR`;
+        document.getElementById('upi-deep-link').href = upiUri;
+        document.getElementById('upi-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUri)}`;
+        document.getElementById('utr-status-msg').innerText = currentUser.utr ? `Submitted UTR: ${currentUser.utr} (Awaiting Admin Approval)` : '';
+      } else {
+        document.getElementById('student-screen').classList.remove('hidden');
+        document.getElementById('live-title-display').innerText = state.liveTitle;
+        document.getElementById('student-yt-frame').src = `https://www.youtube-nocookie.com/embed/${state.liveVideoId}?modestbranding=1&rel=0`;
+        renderStudentDoubts();
+        renderStudentMaterials();
+        renderMCQ();
+      }
+    }
+
+    function submitUTR() {
+      const utr = document.getElementById('utr-input').value.trim();
+      if (utr.length < 6) return alert('Please enter a valid 12-digit UPI UTR number.');
+      currentUser.utr = utr;
+      currentUser.status = 'PENDING';
+      saveState();
+      renderApp();
+    }
+
+    function renderAdminStudents(filter) {
+      const box = document.getElementById('admin-student-table');
+      const list = state.users.filter(u => u.role === 'student' && (filter === 'ALL' || u.status === filter));
+      box.innerHTML = list.map(u => `
+        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex flex-wrap justify-between items-center gap-2">
+          <div>
+            <p class="font-bold text-white">${u.name} <span class="text-slate-400">(${u.email} • ${u.phone || 'No Phone'})</span></p>
+            <p class="text-[11px] text-amber-400">Status: <b>${u.status}</b> ${u.utr ? `| UTR: ${u.utr}` : ''}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="setStudentStatus(${u.id}, 'PAID')" class="bg-emerald-500 text-slate-950 font-bold px-2.5 py-1 rounded">Approve (Paid)</button>
+            <button onclick="setStudentStatus(${u.id}, 'UNPAID')" class="bg-rose-500 text-white font-bold px-2.5 py-1 rounded">Mark Unpaid</button>
+            <a target="_blank" href="https://wa.me/91${u.phone}?text=${encodeURIComponent('Hello ' + u.name + ', your monthly coaching fee for SR GS Study Circle (প্রস্তুতি) is pending. Please complete payment in the app to unlock classes.')}" class="bg-slate-800 text-emerald-400 border border-slate-700 px-2.5 py-1 rounded">WhatsApp Reminder</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setStudentStatus(id, status) {
+      const u = state.users.find(x => x.id === id);
+      if (u) { u.status = status; saveState(); renderAdminStudents('ALL'); }
+    }
+
+    function savePaymentSettings() {
+      state.upiId = document.getElementById('cfg-upi').value.trim();
+      state.feeAmount = Number(document.getElementById('cfg-fee').value);
+      saveState();
+      alert('UPI ID and Monthly Fee updated!');
+    }
+
+    function updateLiveStream() {
+      state.liveTitle = document.getElementById('adm-live-title').value.trim();
+      state.liveVideoId = extractYouTubeId(document.getElementById('adm-live-url').value);
+      saveState();
+      alert('Live stream updated for all paid students!');
+    }
+
+    function sendPrivateDoubt() {
+      const inp = document.getElementById('student-doubt-input');
+      if (!inp.value.trim()) return;
+      state.doubts.push({ id: Date.now(), studentEmail: currentUser.email, studentName: currentUser.name, q: inp.value.trim(), reply: '' });
+      inp.value = '';
+      saveState();
+      renderStudentDoubts();
+    }
+
+    function renderStudentDoubts() {
+      const mine = state.doubts.filter(d => d.studentEmail === currentUser.email);
+      document.getElementById('private-doubt-feed').innerHTML = mine.map(d => `
+        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1">
+          <p><b class="text-amber-400">You:</b> ${d.q}</p>
+          ${d.reply ? `<p class="text-emerald-300"><b>Sir's Reply:</b> ${d.reply}</p>` : `<p class="text-slate-500 italic">Awaiting Sir's reply...</p>`}
+        </div>
+      `).join('');
+    }
+
+    function renderAdminDoubts() {
+      document.getElementById('admin-doubt-inbox').innerHTML = state.doubts.map(d => `
+        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1.5">
+          <p><b class="text-amber-400">${d.studentName}:</b> ${d.q}</p>
+          <div class="flex gap-1.5">
+            <input id="rep-${d.id}" type="text" value="${d.reply}" placeholder="Write private reply..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1" />
+            <button onclick="replyDoubt(${d.id})" class="bg-emerald-500 text-slate-950 font-bold px-2.5 py-1 rounded">Reply</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function replyDoubt(id) {
+      const d = state.doubts.find(x => x.id === id);
+      if (d) { d.reply = document.getElementById('rep-' + id).value.trim(); saveState(); alert('Reply sent privately to student!'); }
+    }
+
+    function addMaterial() {
+      const t = document.getElementById('mat-title').value.trim();
+      const u = document.getElementById('mat-link').value.trim();
+      if (!t || !u) return;
+      state.materials.push({ title: t, url: u });
+      saveState();
+      document.getElementById('mat-title').value = '';
+      document.getElementById('mat-link').value = '';
+      alert('Study Material Added!');
+    }
+
+    function renderStudentMaterials() {
+      document.getElementById('student-materials-list').innerHTML = state.materials.map(m => `
+        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center">
+          <span>${m.title}</span>
+          <a href="${m.url}" target="_blank" class="bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded">Open PDF</a>
+        </div>
+      `).join('');
+    }
+
+    function renderMCQ() {
+      const box = document.getElementById('mcq-box');
+      box.innerHTML = state.mcqs.map((m, idx) => `
+        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1">
+          <p class="font-semibold">${m.q}</p>
+          ${m.opts.map((o, oi) => `<label class="block"><input type="radio" name="mcq-${idx}" value="${oi}" class="mr-1.5" />${o}</label>`).join('')}
+        </div>
+      `).join('') + `<button onclick="gradeMCQ()" class="w-full bg-emerald-500 text-slate-950 font-bold py-2 rounded-lg">Submit Test & View Private Score</button><p id="mcq-score" class="font-bold text-amber-400 text-center"></p>`;
+    }
+
+    function gradeMCQ() {
+      let score = 0;
+      state.mcqs.forEach((m, idx) => {
+        const sel = document.querySelector(`input[name="mcq-${idx}"]:checked`);
+        if (sel) score += (Number(sel.value) === m.ans) ? 1 : -0.25;
+      });
+      document.getElementById('mcq-score').innerText = `Your Private Score: ${score} / ${state.mcqs.length}`;
+    }
+
+    renderApp();
+  </script>
+</body>
+</html>
